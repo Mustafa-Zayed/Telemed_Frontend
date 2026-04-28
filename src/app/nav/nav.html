@@ -1,0 +1,66 @@
+<nav class="navbar">
+  <div class="container">
+    <div class="navbar-content">
+      <a routerLink="/" class="logo"> Telemed Health </a>
+
+      <div class="nav-links">
+        <a routerLink="/home" [class]="isActiveLink('/')"> Home </a>
+
+        @if (!isAuthenticated) {
+          <div>
+            <a routerLink="/login" [class]="isActiveLink('/login')"> Login </a>
+            <a routerLink="/register" [class]="isActiveLink('/register')"> Register as Patient </a>
+            <a routerLink="/register-doctor" [class]="isActiveLink('/register-doctor')">
+              Register as Doctor
+            </a>
+          </div>
+        } @else {
+          <!-- Patient specific links -->
+          @if (isPatient) {
+            <div>
+              <a routerLink="/profile" [class]="isActiveLink('/profile')"> Profile </a>
+              <a routerLink="/book-appointment" [class]="isActiveLink('/book-appointment')">
+                Book Appointment
+              </a>
+              <a routerLink="/my-appointments" [class]="isActiveLink('/my-appointments')">
+                My Appointments
+              </a>
+            </div>
+          }
+
+          <!-- Doctor specific links -->
+          @if (isDoctor) {
+            <div>
+              <a routerLink="/doctor/profile" [class]="isActiveLink('/doctor/profile')">
+                Doctor Dashboard
+              </a>
+              <a routerLink="/doctor/appointments" [class]="isActiveLink('/doctor/appointments')">
+                My Appointments
+              </a>
+            </div>
+          }
+
+          <button (click)="handleLogoutClick()" class="logout-btn">Logout</button>
+        }
+      </div>
+    </div>
+  </div>
+</nav>
+
+<!-- Logout Confirmation Modal -->
+@if (showLogoutModal) {
+  <div class="modal-overlay">
+    <div class="modal">
+      <div class="modal-header">
+        <h3>Confirm Logout</h3>
+      </div>
+      <div class="modal-body">
+        <p>Are you sure you want to logout?</p>
+      </div>
+      <div class="modal-actions">
+        <button (click)="handleCancelLogout()" class="btn btn-secondary">Cancel</button>
+        <button (click)="handleConfirmLogout()" class="btn btn-primary">Yes, Logout</button>
+      </div>
+    </div>
+  </div>
+}
