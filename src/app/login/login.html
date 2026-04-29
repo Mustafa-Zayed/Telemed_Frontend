@@ -1,0 +1,51 @@
+<div class="container">
+  <div class="form-container">
+    <h2 class="form-title">Login to Telemed</h2>
+
+    @if (error()) {
+      <div class="alert alert-error">
+        {{ error() }}
+      </div>
+    }
+
+    <form (ngSubmit)="handleSubmit($event)">
+      <div class="form-group">
+        <label class="form-label">Email</label>
+        <input
+          type="email"
+          name="email"
+          class="form-input"
+          [(ngModel)]="formData().email"
+          (ngModelChange)="formData.set({ ...formData(), email: $event })"
+          required
+        />
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Password</label>
+        <input
+          type="password"
+          name="password"
+          class="form-input"
+          [(ngModel)]="formData().password"
+          (ngModelChange)="formData.set({ ...formData(), password: $event })"
+          required
+        />
+      </div>
+
+      <button type="submit" class="form-btn">Login</button>
+    </form>
+
+    <div class="form-link">
+      <p>
+        Don't have an account?
+        <a routerLink="/register">Register as Patient</a> or
+        <a routerLink="/register-doctor">Register as Doctor</a>
+      </p>
+      <p>
+        Forgot Password?
+        <a routerLink="/forgot-password">Reset Password here</a>
+      </p>
+    </div>
+  </div>
+</div>
