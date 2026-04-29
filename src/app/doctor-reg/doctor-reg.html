@@ -1,0 +1,91 @@
+<div class="container">
+  <div class="form-container">
+    <h2 class="form-title">Register as Doctor</h2>
+
+    @if (error()) {
+      <div class="alert alert-error">
+        {{ error() }}
+      </div>
+    }
+
+    @if (success()) {
+      <div class="alert alert-success">
+        {{ success() }}
+      </div>
+    }
+
+    <form (ngSubmit)="handleSubmit($event)">
+      <div class="form-group">
+        <label class="form-label">Full Name</label>
+        <input
+          type="text"
+          name="name"
+          class="form-input"
+          [(ngModel)]="formData().name"
+          (ngModelChange)="formData.set({ ...formData(), name: $event })"
+          required
+        />
+      </div>
+      <div class="form-group">
+        <label class="form-label">Email</label>
+        <input
+          type="email"
+          name="email"
+          class="form-input"
+          [(ngModel)]="formData().email"
+          (ngModelChange)="formData.set({ ...formData(), email: $event })"
+          required
+        />
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Password</label>
+        <input
+          type="password"
+          name="password"
+          class="form-input"
+          [(ngModel)]="formData().password"
+          (ngModelChange)="formData.set({ ...formData(), password: $event })"
+          required
+        />
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">License Number</label>
+        <input
+          type="text"
+          name="licenseNumber"
+          class="form-input"
+          [(ngModel)]="formData().licenseNumber"
+          (ngModelChange)="formData.set({ ...formData(), licenseNumber: $event })"
+          required
+        />
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Specialization</label>
+        <select
+          name="specialization"
+          class="form-select"
+          [(ngModel)]="formData().specialization"
+          (ngModelChange)="formData.set({ ...formData(), specialization: $event })"
+          required
+        >
+          <option value="">Select Specialization</option>
+          @for (spec of specializations(); track $index) {
+            <option [value]="spec">
+              {{ formatSpecialization(spec) }}
+            </option>
+          }
+        </select>
+      </div>
+
+      <button type="submit" class="form-btn">Register as Doctor</button>
+    </form>
+
+    <div class="form-link">
+      <p>Already have an account? <a routerLink="/login">Login here</a></p>
+      <p class="mt-1">Want to register as a patient? <a routerLink="/register">Click here</a></p>
+    </div>
+  </div>
+</div>
