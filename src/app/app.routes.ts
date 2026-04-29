@@ -3,6 +3,7 @@ import { Home } from './home/home';
 import { Reg } from './reg/reg';
 import { DoctorReg } from './doctor-reg/doctor-reg';
 import { Login } from './login/login';
+import { Profile } from './profile/profile';
 
 export const routes: Routes = [
   // AUTH ROUTES
@@ -12,4 +13,6 @@ export const routes: Routes = [
 
   { path: 'home', redirectTo: '' },
   { path: '', component: Home },
+
+  { path: 'profile', component: Profile },
 ];

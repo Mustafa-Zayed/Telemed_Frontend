@@ -1,0 +1,144 @@
+<div class="container">
+  <!-- Error State -->
+  @if (error()) {
+    <div class="form-container">
+      <div class="alert alert-error">{{ error() }}</div>
+    </div>
+  }
+
+  <!-- Profile Content -->
+  @if (!error()) {
+    <div class="profile-container">
+      <div class="profile-header">
+        <div class="profile-header-main">
+          <div class="profile-picture-section">
+            <div class="profile-picture-container">
+              @if (getProfilePictureUrl()) {
+                <img
+                  [src]="getProfilePictureUrl()"
+                  alt="Profile"
+                  class="profile-picture"
+                  (error)="onImageError($event)"
+                />
+              }
+              <div class="profile-picture-placeholder" [class.hidden]="getProfilePictureUrl()">
+                {{ userData()?.name?.charAt(0)?.toUpperCase() || 'U' }}
+              </div>
+              <div class="profile-picture-overlay">
+                <label for="profile-picture-upload" class="upload-label">
+                  {{ uploading() ? 'Uploading...' : 'Change Photo' }}
+                </label>
+                <input
+                  id="profile-picture-upload"
+                  type="file"
+                  accept="image/*"
+                  (change)="handleProfilePictureChange($event)"
+                  [disabled]="uploading()"
+                  style="display: none"
+                />
+              </div>
+            </div>
+            @if (uploadError()) {
+              <div class="alert alert-error mt-1">
+                {{ uploadError() }}
+              </div>
+            }
+            @if (uploadSuccess()) {
+              <div class="alert alert-success mt-1">
+                {{ uploadSuccess() }}
+              </div>
+            }
+          </div>
+          <div class="profile-title-section">
+            <h1 class="profile-title">My Profile</h1>
+            <p class="profile-subtitle">{{ userData()?.name }}</p>
+          </div>
+        </div>
+
+        <div class="profile-actions">
+          <button (click)="handleUpdateProfile()" class="btn btn-primary">Update Profile</button>
+          <button (click)="handleUpdatePassword()" class="btn btn-secondary">
+            Update Password
+          </button>
+          <a routerLink="/book-appointment" class="btn btn-primary"> Book Appointment </a>
+          <a routerLink="/my-appointments" class="btn btn-secondary"> My Appointments </a>
+          <a routerLink="/consultation-history" class="btn btn-outline"> Consultation History </a>
+        </div>
+      </div>
+
+      <div class="profile-content">
+        <!-- User Information Section -->
+        <div class="profile-section">
+          <h2 class="section-title">Account Information</h2>
+          <div class="info-grid">
+            <div class="info-item">
+              <label class="info-label">Name</label>
+              <div class="info-value">{{ userData()?.name || 'Not provided' }}</div>
+            </div>
+            <div class="info-item">
+              <label class="info-label">Email</label>
+              <div class="info-value">{{ userData()?.email || 'Not provided' }}</div>
+            </div>
+            <div class="info-item">
+              <label class="info-label">User ID</label>
+              <div class="info-value">{{ userData()?.id || 'Not provided' }}</div>
+            </div>
+            <div class="info-item">
+              <label class="info-label">Roles</label>
+              <div class="info-value">
+                {{ rolesDisplay }}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Patient Information Section -->
+        @if (patientData()) {
+          <div class="profile-section">
+            <h2 class="section-title">Medical Information</h2>
+            <div class="info-grid">
+              <div class="info-item">
+                <label class="info-label">First Name</label>
+                <div class="info-value">{{ patientData().firstName || 'Not provided' }}</div>
+              </div>
+              <div class="info-item">
+                <label class="info-label">Last Name</label>
+                <div class="info-value">{{ patientData().lastName || 'Not provided' }}</div>
+              </div>
+              <div class="info-item">
+                <label class="info-label">Phone</label>
+                <div class="info-value">{{ patientData().phone || 'Not provided' }}</div>
+              </div>
+              <div class="info-item">
+                <label class="info-label">Date of Birth</label>
+                <div class="info-value">{{ formatDate(patientData().dateOfBirth || '') }}</div>
+              </div>
+              <div class="info-item">
+                <label class="info-label">Blood Group</label>
+                <div class="info-value">{{ formatBloodGroup(patientData().bloodGroup || '') }}</div>
+              </div>
+              <div class="info-item">
+                <label class="info-label">Genotype</label>
+                <div class="info-value">{{ patientData().genotype || 'Not provided' }}</div>
+              </div>
+              <div class="info-item full-width">
+                <label class="info-label">Known Allergies</label>
+                <div class="info-value">
+                  {{ patientData().knownAllergies || 'No known allergies' }}
+                </div>
+              </div>
+            </div>
+          </div>
+        } @else {
+          <div class="profile-section">
+            <div class="alert alert-info">
+              <p>
+                No patient profile found. Please update your profile to add medical information.
+              </p>
+            </div>
+          </div>
+        }
+      </div>
+    </div>
+  }
+</div>
