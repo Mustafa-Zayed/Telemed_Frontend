@@ -6,6 +6,7 @@ import { Login } from './login/login';
 import { Profile } from './profile/profile';
 import { UpdateProfile } from './update-profile/update-profile';
 import { UpdatePassword } from './update-password/update-password';
+import { BookAppointment } from './book-appointment/book-appointment';
 
 export const routes: Routes = [
   // AUTH ROUTES
@@ -19,4 +20,5 @@ export const routes: Routes = [
   { path: 'profile', component: Profile },
   { path: 'update-profile', component: UpdateProfile },
   { path: 'update-password', component: UpdatePassword },
+  { path: 'book-appointment', component: BookAppointment },
 ];

@@ -1,0 +1,83 @@
+<div class="container">
+  <div class="form-container">
+    <h2 class="form-title">Book Appointment</h2>
+
+    @if (error()) {
+      <div class="alert alert-error">
+        {{ error() }}
+      </div>
+    }
+
+    @if (success()) {
+      <div class="alert alert-success">
+        {{ success() }}
+      </div>
+    }
+
+    <form (ngSubmit)="handleSubmit($event)">
+      <div class="form-group">
+        <label class="form-label">Select Doctor</label>
+        <select
+          name="doctorId"
+          class="form-select"
+          [(ngModel)]="formData().doctorId"
+          (ngModelChange)="formData.set({ ...formData(), doctorId: $event })"
+          required
+        >
+          <option value="">Choose a doctor</option>
+          @for (doctor of doctors(); track $index) {
+            <option [value]="doctor.id">
+              {{ formatDoctorName(doctor) }}
+            </option>
+          }
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Purpose of Consultation</label>
+        <input
+          type="text"
+          name="purposeOfConsultation"
+          class="form-input"
+          [(ngModel)]="formData().purposeOfAppointment"
+          (ngModelChange)="formData.set({ ...formData(), purposeOfAppointment: $event })"
+          placeholder="Briefly describe why you need consultation"
+          required
+        />
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Initial Symptoms</label>
+        <textarea
+          name="initialSymptoms"
+          class="form-input"
+          [(ngModel)]="formData().initialSymptoms"
+          (ngModelChange)="formData.set({ ...formData(), initialSymptoms: $event })"
+          placeholder="Describe your symptoms in detail"
+          rows="4"
+          required
+        ></textarea>
+        <small class="form-help">Be specific about your symptoms, duration, and severity</small>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Preferred Date & Time</label>
+        <input
+          type="datetime-local"
+          name="startTime"
+          class="form-input"
+          [(ngModel)]="formData().startTime"
+          (ngModelChange)="formData.set({ ...formData(), startTime: $event })"
+          [min]="getMinDateTime()"
+          required
+        />
+        <small class="form-help">Select your preferred appointment date and time</small>
+      </div>
+
+      <div class="form-actions">
+        <button type="button" class="btn btn-secondary" (click)="handleCancel()">Cancel</button>
+        <button type="submit" class="btn btn-primary">Book Appointment</button>
+      </div>
+    </form>
+  </div>
+</div>
