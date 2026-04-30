@@ -3,6 +3,7 @@ import { Component, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { Api } from '../service/api';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-profile',
@@ -13,6 +14,8 @@ import { Api } from '../service/api';
 export class Profile {
   private apiService = inject(Api);
   private router = inject(Router);
+
+  private subscriptions: Subscription[] = [];
 
   userData = signal<any | null>(null);
   patientData = signal<any | null>(null);
@@ -28,7 +31,7 @@ export class Profile {
   // Account Information
   fetchUserData(): void {
     this.error.set('');
-    this.apiService.getMyUserDetails().subscribe({
+    const subscription = this.apiService.getMyUserDetails().subscribe({
       next: (response: any) => {
         if (response.statusCode === 200) {
           this.userData.set(response.data);
@@ -46,11 +49,12 @@ export class Profile {
         console.error('Error fetching profile:', error);
       },
     });
+    this.subscriptions.push(subscription);
   }
 
   // Medical Information
   fetchPatientProfile(): void {
-    this.apiService.getMyPatientProfile().subscribe({
+    const subscription = this.apiService.getMyPatientProfile().subscribe({
       next: (response: any) => {
         if (response.statusCode === 200) {
           this.patientData.set(response.data);
@@ -60,6 +64,7 @@ export class Profile {
         console.error('Error fetching patient profile:', error);
       },
     });
+    this.subscriptions.push(subscription);
   }
 
   handleUpdateProfile(): void {
@@ -90,7 +95,7 @@ export class Profile {
     this.uploadError.set('');
     this.uploadSuccess.set('');
 
-    this.apiService.uploadProfilePicture(file).subscribe({
+    const subscription = this.apiService.uploadProfilePicture(file).subscribe({
       next: (response: any) => {
         if (response.statusCode === 200) {
           this.uploadSuccess.set('Profile picture updated successfully!');
@@ -111,6 +116,7 @@ export class Profile {
         this.uploading.set(false);
       },
     });
+    this.subscriptions.push(subscription);
   }
 
   formatDate(dateString: string): string {
@@ -146,5 +152,9 @@ export class Profile {
     return this.userData()
       .roles.map((role: any) => role.name)
       .join(', ');
+  }
+
+  ngOnDestroy(): void {
+    this.subscriptions.forEach((subscription) => subscription.unsubscribe());
   }
 }

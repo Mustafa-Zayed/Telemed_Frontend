@@ -2,6 +2,7 @@ import { Component, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { Api } from '../service/api';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-doctor-reg',
@@ -10,8 +11,12 @@ import { Api } from '../service/api';
   styleUrl: './doctor-reg.css',
 })
 export class DoctorReg {
-  specializations = signal<string[]>([]);
+  private apiService = inject(Api);
+  private router = inject(Router);
 
+  subscriptions: Subscription[] = [];
+
+  specializations = signal<string[]>([]);
   formData = signal({
     name: '',
     email: '',
@@ -24,15 +29,12 @@ export class DoctorReg {
   error = signal('');
   success = signal('');
 
-  private apiService = inject(Api);
-  private router = inject(Router);
-
   ngOnInit(): void {
     this.fetchSpecializations();
   }
 
   fetchSpecializations(): void {
-    this.apiService.getAllSpecializationEnums().subscribe({
+    const subscription = this.apiService.getAllSpecializationEnums().subscribe({
       next: (response: any) => {
         if (response.statusCode === 200) {
           this.specializations.set(response.data);
@@ -42,6 +44,7 @@ export class DoctorReg {
         this.error.set('Failed to load specializations');
       },
     });
+    this.subscriptions.push(subscription);
   }
 
   // Method to format specialization display
@@ -59,7 +62,7 @@ export class DoctorReg {
       return;
     }
 
-    this.apiService.register(this.formData()).subscribe({
+    const subscription = this.apiService.register(this.formData()).subscribe({
       next: (response: any) => {
         if (response.statusCode === 200) {
           this.success.set('Doctor registration successful! You can now login.');
@@ -73,7 +76,7 @@ export class DoctorReg {
           });
           setTimeout(() => {
             this.router.navigate(['/login']);
-          }, 5000);
+          }, 2000);
         } else {
           this.error.set(response.message || 'Registration failed');
         }
@@ -82,5 +85,10 @@ export class DoctorReg {
         this.error.set(error.error?.message || 'An error occurred during registration');
       },
     });
+    this.subscriptions.push(subscription);
+  }
+
+  ngOnDestroy(): void {
+    this.subscriptions.forEach((subscription) => subscription.unsubscribe());
   }
 }

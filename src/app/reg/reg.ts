@@ -3,6 +3,7 @@ import { Component, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { Api } from '../service/api';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-reg',
@@ -11,6 +12,11 @@ import { Api } from '../service/api';
   styleUrl: './reg.css',
 })
 export class Reg {
+  private apiService = inject(Api);
+  private router = inject(Router);
+
+  subscriptions: Subscription[] = [];
+
   formData = signal({
     name: '',
     email: '',
@@ -20,15 +26,12 @@ export class Reg {
   error = signal('');
   success = signal('');
 
-  private apiService = inject(Api);
-  private router = inject(Router);
-
   handleSubmit(event: Event): void {
     event.preventDefault();
     this.error.set('');
     this.success.set('');
 
-    this.apiService.register(this.formData()).subscribe({
+    const subscription = this.apiService.register(this.formData()).subscribe({
       next: (response: any) => {
         if (response.statusCode === 200) {
           this.success.set('Registration successful! You can now login.');
@@ -36,7 +39,7 @@ export class Reg {
 
           setTimeout(() => {
             this.router.navigate(['/login']);
-          }, 5000);
+          }, 2000);
         } else {
           this.error.set(response.message || 'Registration failed');
         }
@@ -45,5 +48,10 @@ export class Reg {
         this.error.set(error.error?.message || 'An error occurred during registration');
       },
     });
+    this.subscriptions.push(subscription);
+  }
+
+  ngOnDestroy(): void {
+    this.subscriptions.forEach((subscription) => subscription.unsubscribe());
   }
 }

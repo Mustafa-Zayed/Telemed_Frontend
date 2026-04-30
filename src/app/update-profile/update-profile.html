@@ -1,0 +1,126 @@
+<div class="container">
+  <div class="form-container">
+    <h2 class="form-title">Update Patient Profile</h2>
+
+    @if (error()) {
+      <div class="alert alert-error">
+        {{ error() }}
+      </div>
+    }
+
+    @if (success()) {
+      <div class="alert alert-success">
+        {{ success() }}
+      </div>
+    }
+
+    <form (ngSubmit)="handleSubmit($event)">
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">First Name</label>
+          <input
+            type="text"
+            name="firstName"
+            class="form-input"
+            [(ngModel)]="formData().firstName"
+            (ngModelChange)="formData.set({ ...formData(), firstName: $event })"
+            placeholder="Enter your first name"
+            required
+          />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Last Name</label>
+          <input
+            type="text"
+            name="lastName"
+            class="form-input"
+            [(ngModel)]="formData().lastName"
+            (ngModelChange)="formData.set({ ...formData(), lastName: $event })"
+            placeholder="Enter your last name"
+            required
+          />
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Phone Number</label>
+        <input
+          type="tel"
+          name="phone"
+          class="form-input"
+          [(ngModel)]="formData().phone"
+          (ngModelChange)="formData.set({ ...formData(), phone: $event })"
+          placeholder="Enter your phone number"
+          required
+        />
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Date of Birth</label>
+        <input
+          type="date"
+          name="dateOfBirth"
+          class="form-input"
+          [(ngModel)]="formData().dateOfBirth"
+          (ngModelChange)="formData.set({ ...formData(), dateOfBirth: $event })"
+          required
+        />
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Blood Group</label>
+          <select
+            name="bloodGroup"
+            class="form-select"
+            [(ngModel)]="formData().bloodGroup"
+            (ngModelChange)="formData.set({ ...formData(), bloodGroup: $event })"
+          >
+            <option value="">Select Blood Group</option>
+            @for (group of bloodGroups(); track $index) {
+              <option [value]="group">
+                {{ formatBloodGroup(group) }}
+              </option>
+            }
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Genotype</label>
+          <select
+            name="genotype"
+            class="form-select"
+            [(ngModel)]="formData().genotype"
+            (ngModelChange)="formData.set({ ...formData(), genotype: $event })"
+          >
+            <option value="">Select Genotype</option>
+            @for (type of genotypes(); track $index) {
+              <option [value]="type">
+                {{ type }}
+              </option>
+            }
+          </select>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Known Allergies</label>
+        <textarea
+          name="knownAllergies"
+          class="form-input"
+          [(ngModel)]="formData().knownAllergies"
+          (ngModelChange)="formData.set({ ...formData(), knownAllergies: $event })"
+          placeholder="List any known allergies (separate with commas)"
+          rows="3"
+        ></textarea>
+        <small class="form-help">Separate multiple allergies with commas</small>
+      </div>
+
+      <div class="form-actions">
+        <button type="button" class="btn btn-secondary" (click)="handleCancel()">Cancel</button>
+        <button type="submit" class="btn btn-primary">Update Profile</button>
+      </div>
+    </form>
+  </div>
+</div>
