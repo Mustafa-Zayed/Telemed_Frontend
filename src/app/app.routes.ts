@@ -11,6 +11,7 @@ import { MyAppointments } from './my-appointments/my-appointments';
 import { ConsultationHistory } from './consultation-history/consultation-history';
 import { ForgotPassword } from './forgot-password/forgot-password';
 import { ResetPassword } from './reset-password/reset-password';
+import { authGuard, patientOnlyGuard } from './service/guard';
 
 export const routes: Routes = [
   // AUTH ROUTES
@@ -19,14 +20,16 @@ export const routes: Routes = [
   { path: 'login', component: Login },
   { path: 'forgot-password', component: ForgotPassword },
   { path: 'reset-password', component: ResetPassword },
-
   { path: 'home', redirectTo: '' },
   { path: '', component: Home },
 
-  { path: 'profile', component: Profile },
-  { path: 'update-profile', component: UpdateProfile },
-  { path: 'update-password', component: UpdatePassword },
-  { path: 'book-appointment', component: BookAppointment },
-  { path: 'my-appointments', component: MyAppointments },
-  { path: 'consultation-history', component: ConsultationHistory },
+  /* Protected Routes */
+  { path: 'profile', component: Profile, canActivate: [patientOnlyGuard] },
+  { path: 'update-profile', component: UpdateProfile, canActivate: [patientOnlyGuard] },
+  { path: 'update-password', component: UpdatePassword, canActivate: [authGuard] },
+  { path: 'book-appointment', component: BookAppointment, canActivate: [patientOnlyGuard] },
+  { path: 'my-appointments', component: MyAppointments, canActivate: [patientOnlyGuard] },
+  { path: 'consultation-history', component: ConsultationHistory, canActivate: [patientOnlyGuard] },
+
+  { path: '**', redirectTo: '' },
 ];
