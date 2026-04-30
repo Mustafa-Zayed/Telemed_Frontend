@@ -1,0 +1,137 @@
+<div class="container">
+  <!-- Error State -->
+  @if (error()) {
+    <div class="form-container">
+      <div class="alert alert-error">{{ error() }}</div>
+    </div>
+  }
+
+  <!-- Profile Content -->
+  @if (!error()) {
+    <div class="profile-container">
+      <div class="profile-header">
+        <div class="profile-header-main">
+          <div class="profile-picture-section">
+            <div class="profile-picture-container">
+              @if (getProfilePictureUrl()) {
+                <img
+                  [src]="getProfilePictureUrl()"
+                  alt="Profile"
+                  class="profile-picture"
+                  (error)="onImageError($event)"
+                />
+              }
+              <div class="profile-picture-placeholder" [class.hidden]="getProfilePictureUrl()">
+                {{ userData()?.name?.charAt(0)?.toUpperCase() || 'D' }}
+              </div>
+              <div class="profile-picture-overlay">
+                <label for="doctor-profile-picture-upload" class="upload-label">
+                  {{ uploading() ? 'Uploading...' : 'Change Photo' }}
+                </label>
+                <input
+                  id="doctor-profile-picture-upload"
+                  type="file"
+                  accept="image/*"
+                  (change)="handleProfilePictureChange($event)"
+                  [disabled]="uploading()"
+                  style="display: none"
+                />
+              </div>
+            </div>
+            @if (uploadError()) {
+              <div class="alert alert-error mt-1">
+                {{ uploadError() }}
+              </div>
+            }
+            @if (uploadSuccess()) {
+              <div class="alert alert-success mt-1">
+                {{ uploadSuccess() }}
+              </div>
+            }
+          </div>
+          <div class="profile-title-section">
+            <h1 class="profile-title">Doctor Profile</h1>
+            <p class="profile-subtitle">Dr. {{ userData()?.name }}</p>
+            @if (doctorData()) {
+              <p class="profile-specialization">
+                {{ formatSpecialization(doctorData().specialization) }}
+              </p>
+            }
+          </div>
+        </div>
+
+        <div class="profile-actions">
+          <button (click)="handleUpdateProfile()" class="btn btn-primary">Update Profile</button>
+          <button (click)="handleUpdatePassword()" class="btn btn-secondary">
+            Update Password
+          </button>
+          <a routerLink="/doctor/appointments" class="btn btn-primary"> My Appointments </a>
+        </div>
+      </div>
+
+      <div class="profile-content">
+        <!-- User Information Section -->
+        <div class="profile-section">
+          <h2 class="section-title">Account Information</h2>
+          <div class="info-grid">
+            <div class="info-item">
+              <label class="info-label">Name</label>
+              <div class="info-value">{{ userData()?.name || 'Not provided' }}</div>
+            </div>
+            <div class="info-item">
+              <label class="info-label">Email</label>
+              <div class="info-value">{{ userData()?.email || 'Not provided' }}</div>
+            </div>
+            <div class="info-item">
+              <label class="info-label">User ID</label>
+              <div class="info-value">{{ userData()?.id || 'Not provided' }}</div>
+            </div>
+            <div class="info-item">
+              <label class="info-label">Roles</label>
+              <div class="info-value">
+                {{ rolesDisplay }}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Doctor Information Section -->
+        @if (doctorData()) {
+          <div class="profile-section">
+            <h2 class="section-title">Professional Information</h2>
+            <div class="info-grid">
+              <div class="info-item">
+                <label class="info-label">First Name</label>
+                <div class="info-value">{{ doctorData().firstName || 'Not provided' }}</div>
+              </div>
+              <div class="info-item">
+                <label class="info-label">Last Name</label>
+                <div class="info-value">{{ doctorData().lastName || 'Not provided' }}</div>
+              </div>
+              <div class="info-item">
+                <label class="info-label">Specialization</label>
+                <div class="info-value">
+                  {{ formatSpecialization(doctorData().specialization) }}
+                </div>
+              </div>
+              <div class="info-item">
+                <label class="info-label">Doctor ID</label>
+                <div class="info-value">{{ doctorData().id || 'Not provided' }}</div>
+              </div>
+            </div>
+          </div>
+        }
+
+        @if (!doctorData()) {
+          <div class="profile-section">
+            <div class="alert alert-info">
+              <p>
+                No doctor profile found. Please update your profile to add professional information.
+              </p>
+            </div>
+          </div>
+        }
+      </div>
+    </div>
+  }
+</div>
