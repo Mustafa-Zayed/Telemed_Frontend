@@ -9,12 +9,16 @@ import { UpdatePassword } from './update-password/update-password';
 import { BookAppointment } from './book-appointment/book-appointment';
 import { MyAppointments } from './my-appointments/my-appointments';
 import { ConsultationHistory } from './consultation-history/consultation-history';
+import { ForgotPassword } from './forgot-password/forgot-password';
+import { ResetPassword } from './reset-password/reset-password';
 
 export const routes: Routes = [
   // AUTH ROUTES
   { path: 'register', component: Reg },
   { path: 'register-doctor', component: DoctorReg },
   { path: 'login', component: Login },
+  { path: 'forgot-password', component: ForgotPassword },
+  { path: 'reset-password', component: ResetPassword },
 
   { path: 'home', redirectTo: '' },
   { path: '', component: Home },

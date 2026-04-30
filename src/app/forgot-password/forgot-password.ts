@@ -1,25 +1,22 @@
 import { Component, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { Router, RouterLink } from '@angular/router';
+import { RouterLink } from '@angular/router';
 import { Api } from '../service/api';
 import { Subscription } from 'rxjs';
 
 @Component({
-  selector: 'app-reg',
+  selector: 'app-forgot-password',
   imports: [FormsModule, RouterLink],
-  templateUrl: './reg.html',
-  styleUrl: './reg.css',
+  templateUrl: './forgot-password.html',
+  styleUrl: './forgot-password.css',
 })
-export class Reg {
+export class ForgotPassword {
   private apiService = inject(Api);
-  private router = inject(Router);
 
   subscriptions: Subscription[] = [];
 
   formData = signal({
-    name: '',
     email: '',
-    password: '', // if we don't send the role property, it's PATIENT by default in the backend
   });
 
   error = signal('');
@@ -30,21 +27,18 @@ export class Reg {
     this.error.set('');
     this.success.set('');
 
-    const subscription = this.apiService.register(this.formData()).subscribe({
+    const subscription = this.apiService.forgetPassword(this.formData()).subscribe({
       next: (response: any) => {
         if (response.statusCode === 200) {
-          this.success.set('Registration successful! You can now login.');
-          this.formData.set({ name: '', email: '', password: '' });
-
-          setTimeout(() => {
-            this.router.navigate(['/login']);
-          }, 2000);
+          this.success.set('Password reset instructions have been sent to your email!');
+          this.formData.set({ email: '' });
         } else {
-          this.error.set(response.message || 'Registration failed');
+          this.error.set(response.message || 'Failed to send reset instructions');
         }
+        this.apiService.logout();
       },
       error: (error: any) => {
-        this.error.set(error.error?.message || 'An error occurred during registration');
+        this.error.set(error.error?.message || 'An error occurred while processing your request');
       },
     });
     this.subscriptions.push(subscription);
