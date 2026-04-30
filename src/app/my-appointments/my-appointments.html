@@ -1,0 +1,108 @@
+<div class="container">
+  <!-- Error State -->
+  @if (error()) {
+    <div class="form-container">
+      <div class="alert alert-error">{{ error() }}</div>
+    </div>
+  }
+
+  <!-- Appointments Content -->
+  @if (!error()) {
+    <div class="page-container">
+      <div class="page-header">
+        <h1 class="page-title">My Appointments</h1>
+        <a routerLink="/book-appointment" class="btn btn-primary"> Book New Appointment </a>
+      </div>
+
+      @if (appointments().length === 0) {
+        <div class="empty-state">
+          <h3>No Appointments Found</h3>
+          <p>You haven't booked any appointments yet.</p>
+          <a routerLink="/book-appointment" class="btn btn-primary">
+            Book Your First Appointment
+          </a>
+        </div>
+      }
+
+      @if (appointments().length > 0) {
+        <div class="appointments-list">
+          @for (appointment of appointments(); track $index) {
+            <div class="appointment-card">
+              <div class="appointment-header">
+                <div class="appointment-info">
+                  <h3 class="doctor-name">
+                    {{ formatDoctorName(appointment.doctor) }}
+                  </h3>
+                  <p class="specialization">
+                    {{ formatSpecialization(appointment.doctor.specialization) }}
+                  </p>
+                </div>
+                <div class="appointment-actions">
+                  <span class="status-badge" [class]="getStatusBadge(appointment.status).class">
+                    {{ getStatusBadge(appointment.status).text }}
+                  </span>
+                  @if (appointment.status === 'SCHEDULED') {
+                    <button
+                      (click)="handleCancelAppointment(appointment.id)"
+                      class="btn btn-danger btn-sm"
+                    >
+                      Cancel
+                    </button>
+                  }
+                </div>
+              </div>
+
+              <div class="appointment-details">
+                <div class="detail-row">
+                  <div class="detail-item">
+                    <label>Date & Time:</label>
+                    <span>{{ formatDateTime(appointment.startTime) }}</span>
+                  </div>
+                  <div class="detail-item">
+                    <label>Duration:</label>
+                    <span>1 hour</span>
+                  </div>
+                </div>
+
+                <div class="detail-item">
+                  <label>Purpose:</label>
+                  <span>{{ appointment.purposeOfConsultation }}</span>
+                </div>
+
+                <div class="detail-item">
+                  <label>Symptoms:</label>
+                  <span>{{ appointment.initialSymptoms }}</span>
+                </div>
+
+                @if (appointment.meetingLink && appointment.status === 'SCHEDULED') {
+                  <div class="detail-item">
+                    <label>Meeting Link:</label>
+                    <a
+                      [href]="appointment.meetingLink"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      class="meeting-link"
+                    >
+                      Join Video Consultation
+                    </a>
+                  </div>
+                }
+                @if (appointment.status === 'COMPLETED') {
+                  <div class="detail-item">
+                    <a
+                      [routerLink]="['/consultation-history']"
+                      [queryParams]="{ appointmentId: appointment.id }"
+                      class="btn btn-outline btn-sm"
+                    >
+                      View Consultation Notes
+                    </a>
+                  </div>
+                }
+              </div>
+            </div>
+          }
+        </div>
+      }
+    </div>
+  }
+</div>
