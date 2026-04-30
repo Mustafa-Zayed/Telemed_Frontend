@@ -1,0 +1,70 @@
+<div class="container">
+  <!-- Error State -->
+  @if (error()) {
+    <div class="form-container">
+      <div class="alert alert-error">{{ error() }}</div>
+    </div>
+  }
+
+  <!-- Consultation History Content -->
+  @if (!error()) {
+    <div class="page-container">
+      <div class="page-header">
+        <h1 class="page-title">
+          {{ getPageTitle() }}
+        </h1>
+        <a routerLink="/my-appointments" class="btn btn-secondary"> Back to Appointments </a>
+      </div>
+
+      @if (consultations().length === 0) {
+        <div class="empty-state">
+          <h3>No Consultation History</h3>
+          <p>You don't have any consultation records yet.</p>
+          <a routerLink="/book-appointment" class="btn btn-primary"> Book an Appointment </a>
+        </div>
+      }
+
+      @if (consultations().length > 0) {
+        <div class="consultations-list">
+          @for (consultation of consultations(); track $index) {
+            <div class="consultation-card">
+              <div class="consultation-header">
+                <h3>Consultation Notes</h3>
+                <span class="consultation-date">
+                  {{ formatDateTime(consultation.consultationDate) }}
+                </span>
+              </div>
+
+              <div class="consultation-section">
+                <h4>Subjective Notes</h4>
+                <p>{{ consultation.subjectiveNotes || 'No subjective notes recorded.' }}</p>
+              </div>
+
+              <div class="consultation-section">
+                <h4>Objective Findings</h4>
+                <p>{{ consultation.objectiveFindings || 'No objective findings recorded.' }}</p>
+              </div>
+
+              <div class="consultation-section">
+                <h4>Assessment</h4>
+                <p>{{ consultation.assessment || 'No assessment recorded.' }}</p>
+              </div>
+
+              <div class="consultation-section">
+                <h4>Treatment Plan</h4>
+                <p>{{ consultation.plan || 'No treatment plan recorded.' }}</p>
+              </div>
+              @if (consultation.appointmentId) {
+                <div class="consultation-footer">
+                  <a routerLink="/my-appointments" class="btn btn-outline btn-sm">
+                    View Appointment Details
+                  </a>
+                </div>
+              }
+            </div>
+          }
+        </div>
+      }
+    </div>
+  }
+</div>
