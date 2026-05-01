@@ -1,0 +1,133 @@
+<div class="container">
+  <!-- Error State -->
+  @if (error()) {
+    <div class="form-container">
+      <div class="alert alert-error">{{ error() }}</div>
+    </div>
+  }
+  <!-- Appointments Content -->
+  @if (!error()) {
+    <div class="page-container">
+      <div class="page-header">
+        <h1 class="page-title">My Appointments</h1>
+        <a routerLink="/doctor/profile" class="btn btn-secondary"> Back to Profile </a>
+      </div>
+
+      @if (appointments().length === 0) {
+        <div class="empty-state">
+          <h3>No Appointments Found</h3>
+          <p>You don't have any scheduled appointments yet.</p>
+        </div>
+      }
+
+      @if (appointments().length > 0) {
+        <div class="appointments-list">
+          @for (appointment of appointments(); track $index) {
+            <div class="appointment-card">
+              <div class="appointment-header">
+                <div class="appointment-info">
+                  <h3 class="patient-name">
+                    Patient: {{ formatPatientInfo(appointment.patient) }}
+                  </h3>
+                  <p class="appointment-time">
+                    {{ formatDateTime(appointment.startTime) }}
+                  </p>
+                </div>
+                <div class="appointment-actions">
+                  <span class="status-badge" [class]="getStatusBadge(appointment.status).class">
+                    {{ getStatusBadge(appointment.status).text }}
+                  </span>
+                  <div class="action-buttons">
+                    @if (appointment.status === 'SCHEDULED') {
+                      <button
+                        (click)="handleCompleteAppointment(appointment.id)"
+                        class="btn btn-success btn-sm"
+                      >
+                        Complete
+                      </button>
+                    }
+                    @if (appointment.status === 'SCHEDULED') {
+                      <button
+                        (click)="handleCancelAppointment(appointment.id)"
+                        class="btn btn-danger btn-sm"
+                      >
+                        Cancel
+                      </button>
+                    }
+                    @if (appointment.status === 'SCHEDULED') {
+                      <a
+                        [routerLink]="['/doctor/patient-consultation-history']"
+                        [queryParams]="{ patientId: appointment.patient.id }"
+                        class="btn btn-info btn-sm"
+                      >
+                        View History
+                      </a>
+                    }
+                    @if (appointment.status === 'COMPLETED') {
+                      <a
+                        [routerLink]="['/doctor/create-consultation']"
+                        [queryParams]="{ appointmentId: appointment.id }"
+                        class="btn btn-primary btn-sm"
+                      >
+                        Create Consultation
+                      </a>
+                    }
+                    @if (appointment.meetingLink && appointment.status === 'SCHEDULED') {
+                      <a
+                        [href]="appointment.meetingLink"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        class="btn btn-outline btn-sm"
+                      >
+                        Join Meeting
+                      </a>
+                    }
+                  </div>
+                </div>
+              </div>
+
+              <div class="appointment-details">
+                <div class="detail-row">
+                  <div class="detail-item">
+                    <label>Purpose:</label>
+                    <span>{{ appointment.purposeOfConsultation }}</span>
+                  </div>
+                  <div class="detail-item">
+                    <label>Duration:</label>
+                    <span>1 hour</span>
+                  </div>
+                </div>
+
+                <div class="detail-item">
+                  <label>Symptoms:</label>
+                  <span>{{ appointment.initialSymptoms }}</span>
+                </div>
+
+                <div class="detail-item">
+                  <label>Patient Info:</label>
+                  <div class="patient-details">
+                    <span
+                      ><strong>DOB:</strong> {{ formatDate(appointment.patient.dateOfBirth) }}</span
+                    >
+                    <span
+                      ><strong>Blood Group:</strong>
+                      {{ formatBloodGroup(appointment.patient.bloodGroup) }}</span
+                    >
+                    <span
+                      ><strong>Genotype:</strong>
+                      {{ appointment.patient.genotype || 'Not provided' }}</span
+                    >
+                    <span
+                      ><strong>Allergies:</strong>
+                      {{ appointment.patient.knownAllergies || 'None' }}</span
+                    >
+                  </div>
+                </div>
+              </div>
+            </div>
+          }
+        </div>
+      }
+    </div>
+  }
+</div>

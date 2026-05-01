@@ -14,6 +14,7 @@ import { ResetPassword } from './reset-password/reset-password';
 import { authGuard, doctorOnlyGuard, patientOnlyGuard } from './service/guard';
 import { DoctorProfile } from './doctor/doctor-profile/doctor-profile';
 import { UpdateDoctorProfile } from './doctor/update-doctor-profile/update-doctor-profile';
+import { DoctorAppointments } from './doctor/doctor-appointments/doctor-appointments';
 
 export const routes: Routes = [
   // AUTH ROUTES
@@ -36,6 +37,7 @@ export const routes: Routes = [
   /* Doctors Routes */
   { path: 'doctor/profile', component: DoctorProfile, canActivate: [doctorOnlyGuard] },
   { path: 'doctor/update-profile', component: UpdateDoctorProfile, canActivate: [doctorOnlyGuard] },
+  { path: 'doctor/appointments', component: DoctorAppointments, canActivate: [doctorOnlyGuard] },
 
   { path: '**', redirectTo: '' },
 ];
