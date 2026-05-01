@@ -1,0 +1,148 @@
+<div class="container">
+  <!-- Error State -->
+  @if (error()) {
+    <div class="form-container">
+      <div class="alert alert-error">{{ error() }}</div>
+      <button (click)="goBackToAppointments()" class="btn btn-secondary">
+        Back to Appointments
+      </button>
+    </div>
+  }
+
+  <!-- Consultation History Content -->
+  @if (!error()) {
+    <div class="page-container">
+      <div class="page-header">
+        <div class="header-content">
+          <div>
+            <h1 class="page-title">Patient Consultation History</h1>
+            <p class="page-subtitle">Patient ID: {{ patientId() }}</p>
+          </div>
+          <button (click)="goBackToAppointments()" class="btn btn-secondary">
+            Back to Appointments
+          </button>
+        </div>
+      </div>
+
+      <!-- Statistics Overview -->
+      @if (consultations().length > 0) {
+        <div class="consultation-stats">
+          <div class="stat-card">
+            <div class="stat-number">{{ getStats().totalConsultations }}</div>
+            <div class="stat-label">Total Consultations</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-number">{{ getStats().recentConsultations }}</div>
+            <div class="stat-label">Last 30 Days</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-number">
+              {{ getMostRecentDate() }}
+            </div>
+            <div class="stat-label">Most Recent</div>
+          </div>
+        </div>
+      }
+
+      @if (consultations().length === 0) {
+        <div class="empty-state">
+          <h3>No Consultation History</h3>
+          <p>This patient doesn't have any consultation records yet.</p>
+          <p class="mt-1">
+            This could be their first visit or consultations haven't been documented.
+          </p>
+        </div>
+      }
+
+      @if (consultations().length > 0) {
+        <div class="consultation-history">
+          @for (group of getGroupedConsultationsArray(); track $index) {
+            <div class="consultation-day-group">
+              <h3 class="day-header">{{ group.date }}</h3>
+              <div class="consultations-list">
+                @for (consultation of group.consultations; track $index) {
+                  <div class="consultation-card detailed">
+                    <div class="consultation-header">
+                      <div class="consultation-meta">
+                        <span class="consultation-time">
+                          {{ formatDateTime(consultation.consultationDate) }}
+                        </span>
+                        <span class="time-ago">
+                          ({{ getTimeAgo(consultation.consultationDate) }})
+                        </span>
+                      </div>
+                      <div class="consultation-id">
+                        Appointment: #{{ consultation.appointmentId }}
+                      </div>
+                    </div>
+
+                    <div class="consultation-sections">
+                      <div class="consultation-section">
+                        <h4>📋 Subjective Notes</h4>
+                        <div class="section-content">
+                          {{ consultation.subjectiveNotes || 'No subjective notes recorded.' }}
+                        </div>
+                      </div>
+
+                      <div class="consultation-section">
+                        <h4>🔍 Objective Findings</h4>
+                        <div class="section-content">
+                          {{ consultation.objectiveFindings || 'No objective findings recorded.' }}
+                        </div>
+                      </div>
+
+                      <div class="consultation-section">
+                        <h4>💊 Assessment</h4>
+                        <div class="section-content">
+                          {{ consultation.assessment || 'No assessment recorded.' }}
+                        </div>
+                      </div>
+
+                      <div class="consultation-section">
+                        <h4>📝 Treatment Plan</h4>
+                        <div class="section-content">
+                          {{ consultation.plan || 'No treatment plan recorded.' }}
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="consultation-actions">
+                      <button class="btn btn-outline btn-sm" (click)="analyzePatterns()">
+                        Analyze Patterns
+                      </button>
+                    </div>
+                  </div>
+                }
+              </div>
+            </div>
+          }
+        </div>
+      }
+
+      <!-- Diagnostic Assistance Section -->
+      @if (consultations().length > 0) {
+        <div class="diagnostic-assistance">
+          <h3>🩺 Diagnostic Insights</h3>
+          <div class="insights-grid">
+            <div class="insight-card">
+              <h4>Recurring Symptoms</h4>
+              <p>Look for patterns in subjective notes across multiple consultations</p>
+            </div>
+            <div class="insight-card">
+              <h4>Treatment Effectiveness</h4>
+              <p>Review previous treatment plans and their outcomes</p>
+            </div>
+            <div class="insight-card">
+              <h4>Progress Tracking</h4>
+              <p>Monitor changes in objective findings over time</p>
+            </div>
+            <div class="insight-card">
+              <h4>Chronic Conditions</h4>
+              <p>Identify persistent issues mentioned in assessments</p>
+            </div>
+          </div>
+        </div>
+      }
+    </div>
+  }
+</div>
