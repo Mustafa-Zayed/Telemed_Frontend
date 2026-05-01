@@ -1,0 +1,104 @@
+<div class="container">
+  <!-- Error State (when no appointment found) -->
+  @if (error() && !appointment()) {
+    <div class="form-container">
+      <div class="alert alert-error">{{ error() }}</div>
+      <button (click)="handleCancel()" class="btn btn-secondary">Back to Appointments</button>
+    </div>
+  }
+
+  <!-- Consultation Form -->
+  @if (appointment()) {
+    <div class="form-container">
+      <h2 class="form-title">Create Consultation</h2>
+
+      @if (error()) {
+        <div class="alert alert-error">
+          {{ error() }}
+        </div>
+      }
+
+      @if (success()) {
+        <div class="alert alert-success">
+          {{ success() }}
+        </div>
+      }
+
+      <div class="consultation-header-info">
+        <h3>Appointment Details</h3>
+        <div class="appointment-summary">
+          <p>
+            <strong>Patient:</strong> {{ appointment().patient.firstName }}
+            {{ appointment().patient.lastName }}
+          </p>
+          <p><strong>Date:</strong> {{ formatDateTime(appointment().startTime) }}</p>
+          <p><strong>Purpose:</strong> {{ appointment().purposeOfConsultation }}</p>
+          <p><strong>Symptoms:</strong> {{ appointment().initialSymptoms }}</p>
+        </div>
+      </div>
+
+      <form (ngSubmit)="handleSubmit($event)">
+        <div class="form-group">
+          <label class="form-label">Subjective Notes</label>
+          <textarea
+            name="subjectiveNotes"
+            class="form-input"
+            [(ngModel)]="formData().subjectiveNotes"
+            (ngModelChange)="formData.set({ ...formData(), subjectiveNotes: $event })"
+            placeholder="Patient's reported symptoms, history, and concerns..."
+            rows="4"
+            required
+          ></textarea>
+          <small class="form-help">Patient's subjective complaints and history</small>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Objective Findings</label>
+          <textarea
+            name="objectiveFindings"
+            class="form-input"
+            [(ngModel)]="formData().objectiveFindings"
+            (ngModelChange)="formData.set({ ...formData(), objectiveFindings: $event })"
+            placeholder="Physical exam findings, vital signs, test results..."
+            rows="4"
+            required
+          ></textarea>
+          <small class="form-help">Objective observations and examination findings</small>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Assessment</label>
+          <textarea
+            name="assessment"
+            class="form-input"
+            [(ngModel)]="formData().assessment"
+            (ngModelChange)="formData.set({ ...formData(), assessment: $event })"
+            placeholder="Diagnosis, differential diagnosis, clinical impression..."
+            rows="3"
+            required
+          ></textarea>
+          <small class="form-help">Clinical assessment and diagnosis</small>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Treatment Plan</label>
+          <textarea
+            name="plan"
+            class="form-input"
+            [(ngModel)]="formData().plan"
+            (ngModelChange)="formData.set({ ...formData(), plan: $event })"
+            placeholder="Treatment recommendations, medications, follow-up plans..."
+            rows="3"
+            required
+          ></textarea>
+          <small class="form-help">Treatment plan and recommendations</small>
+        </div>
+
+        <div class="form-actions">
+          <button type="button" class="btn btn-secondary" (click)="handleCancel()">Cancel</button>
+          <button type="submit" class="btn btn-primary">Create Consultation</button>
+        </div>
+      </form>
+    </div>
+  }
+</div>
