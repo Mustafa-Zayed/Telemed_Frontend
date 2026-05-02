@@ -47,6 +47,10 @@ export class Login {
     this.subscriptions.push(subscription);
   }
 
+  onGoogleLogin = (): void => {
+    window.location.href = 'http://localhost:8080/api/auth/login/google';
+  };
+
   ngOnDestroy(): void {
     this.subscriptions.forEach((subscription) => subscription.unsubscribe());
   }

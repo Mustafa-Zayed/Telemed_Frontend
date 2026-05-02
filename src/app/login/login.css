@@ -80,3 +80,33 @@
 .form-link a:hover {
     text-decoration: underline;
 }
+
+.social-login {
+    margin-top: 1.2rem;
+    padding-top: 1.2rem;
+    border-top: 1px solid #e2e8f0;
+}
+
+.google-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    padding: 0.75rem 1rem;
+    background-color: #fff;
+    color: #3a4a6d;
+    border: 2px solid #e2e8f0;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.google-button svg {
+    margin-right: 0.6rem;
+    height: 1.1em;
+    width: 1.1em;
+    fill: currentColor;
+    color: #ea4335;
+}
