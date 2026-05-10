@@ -56,7 +56,8 @@ export class UpdatePassword {
             confirmPassword: '',
           });
           setTimeout(() => {
-            this.router.navigate(['/profile']);
+            if (this.apiService.isDoctor()) this.router.navigate(['/doctor/profile']);
+            else if (this.apiService.isPatient()) this.router.navigate(['/profile']);
           }, 2000);
         } else {
           this.error.set(response.message || 'Failed to update password');
@@ -70,7 +71,8 @@ export class UpdatePassword {
   }
 
   handleCancel(): void {
-    this.router.navigate(['/profile']);
+    if (this.apiService.isDoctor()) this.router.navigate(['/doctor/profile']);
+    else if (this.apiService.isPatient()) this.router.navigate(['/profile']);
   }
 
   ngOnDestroy(): void {
